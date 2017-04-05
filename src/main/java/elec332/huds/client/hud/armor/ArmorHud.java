@@ -1,10 +1,10 @@
 package elec332.huds.client.hud.armor;
 
 import elec332.core.hud.AbstractHud;
+import elec332.core.hud.drawing.ItemStackDrawer;
 import elec332.core.hud.position.Alignment;
 import elec332.core.hud.position.HorizontalStartingPoint;
 import elec332.core.hud.position.VerticalStartingPoint;
-import elec332.core.hud.drawing.ItemStackDrawer;
 import elec332.core.util.ItemStackHelper;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.inventory.EntityEquipmentSlot;

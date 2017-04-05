@@ -1,5 +1,6 @@
 package elec332.huds.proxy;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import elec332.core.api.config.IConfigurableElement;
 import elec332.core.api.registry.ISingleRegister;
@@ -7,8 +8,10 @@ import elec332.core.config.ConfigWrapper;
 import elec332.core.hud.AbstractHud;
 import elec332.core.util.AbstractCommandBase;
 import elec332.huds.Huds;
+import elec332.huds.client.GuiFactory;
 import elec332.huds.client.hud.armor.ArmorHud;
 import elec332.huds.client.hud.damage.DamageHud;
+import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
@@ -24,7 +27,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -73,21 +75,36 @@ public class ClientProxy extends CommonProxy {
 	public void registerClientCommands(ISingleRegister<ICommand> commandRegistry) {
 		commandRegistry.register(new AbstractCommandBase() {
 
+			static final String show = "show", reload = "reload";
+
 			@Nonnull
 			@Override
 			public String getMCCommandName() {
-				return "reloadhud";
+				return "hudconfig";
 			}
 
 			@Nonnull
 			@Override
 			public String getMCCommandUsage(ICommandSender iCommandSender) {
-				return "reloadhud";
+				return "hudconfig <"+show+"|"+reload+">";
 			}
 
 			@Override
 			public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args) throws CommandException {
-				config.refresh();
+				if (args.length != 1){
+					throw new CommandException(args.length == 0 ? "No argument provided." : "Too many arguments provided: " + Lists.newArrayList(args));
+				}
+				String s = args[0];
+				switch (s){
+					case show:
+						Minecraft.getMinecraft().displayGuiScreen(new GuiFactory.ConfigGui(Minecraft.getMinecraft().currentScreen));
+						break;
+					case reload:
+						config.refresh();
+						break;
+					default:
+						break;
+				}
 			}
 
 		});
