@@ -32,7 +32,6 @@ import java.awt.*;
 /**
  * Created by Elec332 on 13-1-2017.
  */
-@ElecModule(owner = Huds.MODID, name = "damageHud")
 public class DamageHud extends AbstractHud {
 
     public DamageHud() {

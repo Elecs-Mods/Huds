@@ -40,7 +40,7 @@ public class GuiFactory implements IModGuiFactory {
 	public static class ConfigGui extends GuiConfig {
 
 		public ConfigGui(GuiScreen parentScreen) {
-			super(parentScreen, ClientProxy.getCategories(), Huds.MODID, false, false, "TitleTest3");
+			super(parentScreen, ClientProxy.getCategories(), Huds.MODID, false, false, "Huds config menu");
 		}
 
 	}

@@ -6,16 +6,19 @@ import elec332.core.api.config.IConfigurableElement;
 import elec332.core.api.registry.ISingleRegister;
 import elec332.core.config.ConfigWrapper;
 import elec332.core.hud.AbstractHud;
+import elec332.core.main.ElecCore;
 import elec332.core.util.AbstractCommandBase;
 import elec332.huds.Huds;
 import elec332.huds.client.GuiFactory;
 import elec332.huds.client.hud.armor.ArmorHud;
 import elec332.huds.client.hud.damage.DamageHud;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
@@ -23,8 +26,10 @@ import net.minecraftforge.fml.client.config.IConfigElement;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -89,15 +94,24 @@ public class ClientProxy extends CommonProxy {
 				return "hudconfig <"+show+"|"+reload+">";
 			}
 
+			@Nonnull
+			@Override
+			public List<String> getMCTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos) {
+				return Lists.newArrayList(show, reload);
+			}
+
 			@Override
 			public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args) throws CommandException {
+				if (!(sender instanceof EntityPlayerSP)){
+					return;
+				}
 				if (args.length != 1){
 					throw new CommandException(args.length == 0 ? "No argument provided." : "Too many arguments provided: " + Lists.newArrayList(args));
 				}
 				String s = args[0];
 				switch (s){
 					case show:
-						Minecraft.getMinecraft().displayGuiScreen(new GuiFactory.ConfigGui(Minecraft.getMinecraft().currentScreen));
+						ElecCore.tickHandler.registerCall(() -> Minecraft.getMinecraft().displayGuiScreen(new GuiFactory.ConfigGui(Minecraft.getMinecraft().currentScreen)), Side.CLIENT);
 						break;
 					case reload:
 						config.refresh();
