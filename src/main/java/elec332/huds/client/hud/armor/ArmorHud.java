@@ -45,13 +45,13 @@ public class ArmorHud extends AbstractHud {
     public void renderHud(@Nonnull EntityPlayerSP player, @Nonnull World world, @Nonnull Alignment alignment, int startX, int startY, float partialTicks) {
         int h = startY + 81;
 
-        for (EntityEquipmentSlot eeqs : EntityEquipmentSlot.values()){
+        for (EntityEquipmentSlot eeqs : EntityEquipmentSlot.values()) {
             EntityEquipmentSlot.Type type = eeqs.getSlotType();
             boolean hand = type == EntityEquipmentSlot.Type.HAND;
-            if (hand && !showTools){
+            if (hand && !showTools) {
                 continue;
             }
-            if (!hand && !showArmor){
+            if (!hand && !showArmor) {
                 continue;
             }
             ItemStack stack = player.getItemStackFromSlot(eeqs);
@@ -63,7 +63,7 @@ public class ArmorHud extends AbstractHud {
                     h2 += 9 - 18 * eeqs.ordinal();
                 }
                 String s = null;
-                if (stack.isItemStackDamageable()){
+                if (stack.isItemStackDamageable()) {
                     s = displayType.getDamageForDisplay(stack);
                 }
                 alignment.renderHudPart(ItemStackDrawer.INSTANCE, stack, s, startX, h2);

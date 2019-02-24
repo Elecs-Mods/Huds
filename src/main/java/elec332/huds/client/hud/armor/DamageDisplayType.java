@@ -11,15 +11,13 @@ import java.text.DecimalFormat;
 public enum DamageDisplayType implements IDamageDisplayType {
 
     DAMAGE {
-
         @Override
         public String getDamageForDisplay(@Nonnull ItemStack stack) {
-             return EMPTY + stack.getItemDamage();
+            return EMPTY + stack.getItemDamage();
         }
 
     },
     USES_LEFT {
-
         @Override
         public String getDamageForDisplay(@Nonnull ItemStack stack) {
             return EMPTY + (stack.getMaxDamage() - stack.getItemDamage());
@@ -37,7 +35,6 @@ public enum DamageDisplayType implements IDamageDisplayType {
 
     },
     NONE {
-
         @Override
         public String getDamageForDisplay(@Nonnull ItemStack stack) {
             return null;

@@ -4,18 +4,26 @@ buildscript {
         maven { url = "http://files.minecraftforge.net/maven" }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
+
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 ext.configFile = file "build.properties"
+
+repositories {
+    maven {
+        name = "ModMaven"
+        url = "https://modmaven.k-4u.nl"
+    }
+}
 
 configFile.withReader {
     def prop = new Properties()
     prop.load(it)
     project.ext.config = new ConfigSlurper().parse prop
-    project.ext.modVersion = "${config.mod_version}." + (System.env.BUILD_NUMBER ?: "localBuild")
+    project.ext.modVersion = "${config.minecraft_version}-${config.mod_version}." + (System.env.BUILD_NUMBER ?: "localBuild")
 }
 
 ext.modInfo = file "mod.properties"
@@ -46,8 +54,10 @@ minecraft {
 	useDepAts = true
 }
 
-dependencies {
 
+
+dependencies {
+    compile "nl.elec332.core:ElecCore:1.12.2-1.9.451"
 }
 
 processResources {
@@ -66,5 +76,43 @@ processResources {
     // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
+    }
+}
+
+//Maven magic
+task("uploadJars", dependsOn: "reobf") {
+    description = "uploads JARs"
+    if (System.getenv("local_maven") != null) {
+        apply plugin: 'maven'
+        uploadArchives {
+            repositories {
+                mavenDeployer {
+                    repository(url: "file://" + System.getenv("local_maven"))
+                    pom {
+                        groupId = project.group
+                        version = project.version
+                        artifactId = project.archivesBaseName
+                        project {
+                            name project.archivesBaseName
+                            packaging 'jar'
+                            description mod.fileName
+                            issueManagement {
+                                system 'github'
+                                url 'https://github.com/Elecs-Mods/Huds/issues'
+                            }
+                            developers {
+                                developer {
+                                    id 'Elec332'
+                                    name 'Elec332'
+                                    roles {
+                                        role 'developer'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

@@ -10,11 +10,11 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
  */
 public class CommonProxy {
 
-	public void preInit(FMLPreInitializationEvent event){
-		Huds.logger.info("This mod is ClientOnly, aborting loading...");
-	}
+    public void preInit(FMLPreInitializationEvent event) {
+        Huds.logger.info("This mod is ClientOnly, aborting loading...");
+    }
 
-	public void registerClientCommands(ISingleRegister<ICommand> commandRegistry) {
-	}
+    public void registerClientCommands(ISingleRegister<ICommand> commandRegistry) {
+    }
 
 }

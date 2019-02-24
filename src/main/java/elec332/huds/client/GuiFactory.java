@@ -7,7 +7,6 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.client.IModGuiFactory;
 import net.minecraftforge.fml.client.config.GuiConfig;
 
-import javax.annotation.Nullable;
 import java.util.Set;
 
 /**
@@ -15,34 +14,31 @@ import java.util.Set;
  */
 public class GuiFactory implements IModGuiFactory {
 
-	@Override
-	public void initialize(Minecraft minecraftInstance) {
+    @Override
+    public void initialize(Minecraft minecraftInstance) {
+    }
 
-	}
+    @Override
+    public boolean hasConfigGui() {
+        return true;
+    }
 
-	@Override
-	public Class<? extends GuiScreen> mainConfigGuiClass() {
-		return ConfigGui.class;
-	}
+    @Override
+    public GuiScreen createConfigGui(GuiScreen parentScreen) {
+        return new ConfigGui(parentScreen);
+    }
 
-	@Override
-	public Set<RuntimeOptionCategoryElement> runtimeGuiCategories() {
-		return null;
-	}
+    @Override
+    public Set<RuntimeOptionCategoryElement> runtimeGuiCategories() {
+        return null;
+    }
 
-	@Nullable
-	@Override
-	@SuppressWarnings("deprecation")
-	public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element) {
-		return null;
-	}
+    public static class ConfigGui extends GuiConfig {
 
-	public static class ConfigGui extends GuiConfig {
+        public ConfigGui(GuiScreen parentScreen) {
+            super(parentScreen, ClientProxy.getCategories(), Huds.MODID, false, false, "Huds config menu");
+        }
 
-		public ConfigGui(GuiScreen parentScreen) {
-			super(parentScreen, ClientProxy.getCategories(), Huds.MODID, false, false, "Huds config menu");
-		}
-
-	}
+    }
 
 }

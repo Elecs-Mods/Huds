@@ -1,6 +1,6 @@
 package elec332.huds.client.hud.damage;
 
-import elec332.core.api.module.ElecModule;
+import elec332.core.ElecCore;
 import elec332.core.client.RenderHelper;
 import elec332.core.client.util.GuiDraw;
 import elec332.core.hud.AbstractHud;
@@ -9,8 +9,6 @@ import elec332.core.hud.drawing.IDrawer;
 import elec332.core.hud.position.Alignment;
 import elec332.core.hud.position.HorizontalStartingPoint;
 import elec332.core.hud.position.VerticalStartingPoint;
-import elec332.core.main.ElecCore;
-import elec332.huds.Huds;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -55,19 +53,19 @@ public class DamageHud extends AbstractHud {
 
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
-    public void onClientTick(TickEvent.ClientTickEvent event){
+    public void onClientTick(TickEvent.ClientTickEvent event) {
         Entity entity = GuiDraw.mc.getRenderManager().pointedEntity;
-        if (this.entity != null && this.entity.isDead && this.noSelectTime < noSelTimeConf - deathShowConf){
+        if (this.entity != null && this.entity.isDead && this.noSelectTime < noSelTimeConf - deathShowConf) {
             this.noSelectTime = noSelTimeConf - deathShowConf;
         }
-        if (entity != null && entity instanceof EntityLivingBase){
-            if (this.entity == null || this.entity.getEntityId() != entity.getEntityId()){
+        if (entity != null && entity instanceof EntityLivingBase) {
+            if (this.entity == null || this.entity.getEntityId() != entity.getEntityId()) {
                 this.entity = (EntityLivingBase) entity;
                 this.noSelectTime = 0;
             }
-        } else if (this.entity != null){
+        } else if (this.entity != null) {
             noSelectTime++;
-            if (noSelectTime >= noSelTimeConf){
+            if (noSelectTime >= noSelTimeConf) {
                 this.entity = null;
                 this.noSelectTime = 0;
             }
@@ -94,7 +92,7 @@ public class DamageHud extends AbstractHud {
             GlStateManager.scale(0.65f, 0.65f, 0.65f);
             FontRenderer font = RenderHelper.getMCFontrenderer();
             String txt = entity.getName();
-            if (entity.isChild() && !entity.hasCustomName()){
+            if (entity.isChild() && !entity.hasCustomName()) {
                 txt = "Baby " + txt;
             }
             font.drawString(txt, -(font.getStringWidth(txt) / 2), 0, Color.WHITE.getRGB());
@@ -113,7 +111,7 @@ public class DamageHud extends AbstractHud {
             int i = 15728880;
             int j = i % 65536;
             int k = i / 65536;
-            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j, (float)k);
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) j, (float) k);
             GlStateManager.color(1, 1, 1, 1);
             alignment.renderHudPart(hudEntityDrawer, entity, startX, startY, (player.rotationYaw) + 180, entS);
         }
