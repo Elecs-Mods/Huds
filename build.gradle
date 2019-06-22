@@ -41,6 +41,11 @@ archivesBaseName = mod.fileName
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+configurations {
+    embed
+    compile.extendsFrom(embed)
+}
+
 minecraft {
     version = config.minecraft_version + "-" + config.forge_version
     runDir = "run"
@@ -54,10 +59,9 @@ minecraft {
 	useDepAts = true
 }
 
-
-
 dependencies {
     compile "nl.elec332.core:ElecCore:1.12.2-1.9.451"
+    embed files("libs/industrialcraft-2-2.8.163-ex112-api.jar")
 }
 
 processResources {
@@ -77,6 +81,10 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
+}
+
+jar {
+    from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
 }
 
 //Maven magic

@@ -13,24 +13,25 @@ public enum DamageDisplayType implements IDamageDisplayType {
     DAMAGE {
         @Override
         public String getDamageForDisplay(@Nonnull ItemStack stack) {
-            return EMPTY + stack.getItemDamage();
+            return EMPTY + DamageUtils.getDamage(stack);
         }
 
     },
     USES_LEFT {
         @Override
         public String getDamageForDisplay(@Nonnull ItemStack stack) {
-            return EMPTY + (stack.getMaxDamage() - stack.getItemDamage());
+            return EMPTY + (DamageUtils.getMaxDamage(stack) - DamageUtils.getDamage(stack));
         }
 
     },
     PERCENT {
-
         private final DecimalFormat format = new DecimalFormat("###.#");
 
         @Override
         public String getDamageForDisplay(@Nonnull ItemStack stack) {
-            return format.format((stack.getMaxDamage() - stack.getItemDamage()) / (float) stack.getMaxDamage() * 100) + "%";
+            int maxDamage = DamageUtils.getMaxDamage(stack);
+            int damage = DamageUtils.getDamage(stack);
+            return format.format((maxDamage - damage) / (float) maxDamage * 100) + "%";
         }
 
     },
@@ -43,5 +44,4 @@ public enum DamageDisplayType implements IDamageDisplayType {
     };
 
     private static final String EMPTY = "";
-
 }
