@@ -1,63 +1,89 @@
+import com.google.common.base.Strings
+
 buildscript {
     repositories {
         jcenter()
-        maven { url = "http://files.minecraftforge.net/maven" }
+        mavenCentral()
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
     }
 }
 
-apply plugin: 'net.minecraftforge.gradle.forge'
-
-ext.configFile = file "build.properties"
+apply plugin: 'net.minecraftforge.gradle'
 
 repositories {
     maven {
         name = "ModMaven"
         url = "https://modmaven.k-4u.nl"
     }
+    maven {
+        url "http://tehnut.info/maven"
+    }
 }
+
+ext.configFile = file "build.properties"
 
 configFile.withReader {
     def prop = new Properties()
     prop.load(it)
     project.ext.config = new ConfigSlurper().parse prop
-    project.ext.modVersion = "${config.minecraft_version}-${config.mod_version}." + (System.env.BUILD_NUMBER ?: "localBuild")
-}
+    String build = System.getenv("BUILD_NUMBER")
+    boolean localBuild = Strings.isNullOrEmpty(build)
 
-ext.modInfo = file "mod.properties"
-
-modInfo.withReader {
-    def prop = new Properties()
-    prop.load(it)
-    project.ext.mod = new ConfigSlurper().parse prop
+    String temp = config.mod_version
+    String classifier = config.mod_classifier
+    classifier = Strings.isNullOrEmpty(classifier) ? "" : "-" + classifier
+    project.ext.modVersion = temp + "." + (localBuild ? "9999.custom" : build)
+    config.mod_version = "${config.minecraft_version}-" + temp + "." + (localBuild ? "localBuild" : build) + classifier
 }
 
 version = modVersion
-group= mod.group // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = mod.fileName
+group = "nl.elec332.huds"
+archivesBaseName = "Huds"
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft {
-    version = config.minecraft_version + "-" + config.forge_version
-    runDir = "run"
-	
-	replaceIn mod.mainClass
-    replace "#ELECCORE_VER#", config.eleccore_version
-	replace "#FORGE_VER#", config.forge_version
-	
-	mappings = config.mappings
-	
-	useDepAts = true
+
+    accessTransformer = file 'src/main/resources/META-INF/accesstransformer.cfg'
+
+    mappings channel: 'snapshot', version: config.mappings
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+			source sourceSets.main
+        }
+
+        server {
+            workingDirectory project.file('run')
+			source sourceSets.main
+        }
+
+        data {
+            workingDirectory project.file('run')
+            args '--mod', 'craftingtableiv', '--all', '--output', file('src/generated/resources/')
+			source sourceSets.main
+        }
+
+    }
+
 }
 
-
-
 dependencies {
-    compile "nl.elec332.core:ElecCore:" + config.minecraft_version + "-" + config.eleccore_version
+    minecraft 'net.minecraftforge:forge:' + config.minecraft_version + "-" + config.forge_version
+    compileOnly "mcp.mobius.waila:Hwyla:${config.WAILA_version}:api"
+    runtimeOnly fg.deobf("mcp.mobius.waila:Hwyla:${config.WAILA_version}")
+    if (project.hasProperty("multi")) {
+        compile project(":ElecCore")
+    } else {
+        compile fg.deobf("nl.elec332.core:ElecCore:" + config.minecraft_version + "-" + config.eleccore_version)
+    }
 }
 
 processResources {
@@ -67,15 +93,17 @@ processResources {
 
     // replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-                
+        include 'META_INF/mods.toml'
+
         // replace version and mcversion
-        expand 'version':modVersion, 'mcversion':config.minecraft_version, 'modid': mod.modid
+        expand 'version': modVersion, 'mcversion': config.minecraft_version, 'loaderversion': config.minecraft_version.replace('1.', '')
+        expand 'forgeversion': config.forge_version
+        expand 'coreversion': config.eleccore_version
     }
-        
+
     // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
+        exclude 'META_INF/mods.toml'
     }
 }
 
@@ -95,7 +123,7 @@ task("uploadJars", dependsOn: "reobf") {
                         project {
                             name project.archivesBaseName
                             packaging 'jar'
-                            description mod.fileName
+                            description project.archivesBaseName
                             issueManagement {
                                 system 'github'
                                 url 'https://github.com/Elecs-Mods/Huds/issues'

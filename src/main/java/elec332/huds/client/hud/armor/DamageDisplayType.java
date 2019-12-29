@@ -13,14 +13,14 @@ public enum DamageDisplayType implements IDamageDisplayType {
     DAMAGE {
         @Override
         public String getDamageForDisplay(@Nonnull ItemStack stack) {
-            return EMPTY + stack.getItemDamage();
+            return EMPTY + stack.getDamage();
         }
 
     },
     USES_LEFT {
         @Override
         public String getDamageForDisplay(@Nonnull ItemStack stack) {
-            return EMPTY + (stack.getMaxDamage() - stack.getItemDamage());
+            return EMPTY + (stack.getMaxDamage() - stack.getDamage());
         }
 
     },
@@ -30,7 +30,7 @@ public enum DamageDisplayType implements IDamageDisplayType {
 
         @Override
         public String getDamageForDisplay(@Nonnull ItemStack stack) {
-            return format.format((stack.getMaxDamage() - stack.getItemDamage()) / (float) stack.getMaxDamage() * 100) + "%";
+            return format.format((stack.getMaxDamage() - stack.getDamage()) / (float) stack.getMaxDamage() * 100) + "%";
         }
 
     },

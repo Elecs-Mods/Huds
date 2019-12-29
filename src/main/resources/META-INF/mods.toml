@@ -1,0 +1,31 @@
+modLoader="javafml"
+loaderVersion="[${loaderversion},)"
+issueTrackerURL="https://github.com/Elecs-Mods/Huds/issues"
+authors="Elec332"
+
+[[mods]]
+modId="huds"
+version="${version}"
+displayName="Huds"
+description="Huds - Armor Status & Damage Indicators"
+
+[[dependencies.huds]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[${mcversion},)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.huds]]
+    modId="forge"
+    mandatory=true
+    versionRange="[${forgeversion},)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.huds]]
+    modId="eleccore"
+    mandatory=true
+    versionRange="[${coreversion},)"
+    ordering="AFTER"
+    side="BOTH"
