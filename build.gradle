@@ -42,7 +42,7 @@ configFile.withReader {
     config.mod_version = "${config.minecraft_version}-" + temp + "." + (localBuild ? "localBuild" : build) + classifier
 }
 
-version = modVersion
+version = config.mod_version
 group = "nl.elec332.huds"
 archivesBaseName = "Huds"
 
