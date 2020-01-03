@@ -1,5 +1,6 @@
 package elec332.huds.client.hud.armor;
 
+import elec332.huds.util.ItemDamageHelper;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
@@ -13,14 +14,14 @@ public enum DamageDisplayType implements IDamageDisplayType {
     DAMAGE {
         @Override
         public String getDamageForDisplay(@Nonnull ItemStack stack) {
-            return EMPTY + stack.getDamage();
+            return EMPTY + ItemDamageHelper.INSTANCE.getDamage(stack);
         }
 
     },
     USES_LEFT {
         @Override
         public String getDamageForDisplay(@Nonnull ItemStack stack) {
-            return EMPTY + (stack.getMaxDamage() - stack.getDamage());
+            return EMPTY + (ItemDamageHelper.INSTANCE.getMaxItemDamage(stack) - ItemDamageHelper.INSTANCE.getDamage(stack));
         }
 
     },
@@ -30,7 +31,9 @@ public enum DamageDisplayType implements IDamageDisplayType {
 
         @Override
         public String getDamageForDisplay(@Nonnull ItemStack stack) {
-            return format.format((stack.getMaxDamage() - stack.getDamage()) / (float) stack.getMaxDamage() * 100) + "%";
+            int damage = ItemDamageHelper.INSTANCE.getDamage(stack);
+            int maxDamage = ItemDamageHelper.INSTANCE.getMaxItemDamage(stack);
+            return format.format((maxDamage - damage) / (float) maxDamage * 100) + "%";
         }
 
     },
