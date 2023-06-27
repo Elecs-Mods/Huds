@@ -22,7 +22,7 @@ repositories {
         url = "https://modmaven.k-4u.nl"
     }
     maven {
-        url "http://tehnut.info/maven"
+        url "http://maven.tehnut.info"
     }
 }
 
@@ -67,7 +67,7 @@ minecraft {
 
         data {
             workingDirectory project.file('run')
-            args '--mod', 'craftingtableiv', '--all', '--output', file('src/generated/resources/')
+            args '--mod', 'huds', '--all', '--output', file('src/generated/resources/'), '--existing', sourceSets.main.resources.srcDirs[0]
 			source sourceSets.main
         }
 
@@ -79,8 +79,10 @@ dependencies {
     minecraft 'net.minecraftforge:forge:' + config.minecraft_version + "-" + config.forge_version
     compileOnly "mcp.mobius.waila:Hwyla:${config.WAILA_version}:api"
     runtimeOnly fg.deobf("mcp.mobius.waila:Hwyla:${config.WAILA_version}")
-    if (project.hasProperty("multi")) {
-        compile project(":ElecCore")
+    if (findProject(":ElecCore") != null) {
+        compile (project(":ElecCore")) {
+            exclude group: "*"
+        }
     } else {
         compile fg.deobf("nl.elec332.core:ElecCore:" + config.minecraft_version + "-" + config.eleccore_version)
     }

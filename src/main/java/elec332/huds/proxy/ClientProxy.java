@@ -1,8 +1,8 @@
 package elec332.huds.proxy;
 
 import com.google.common.collect.Sets;
+import elec332.core.api.config.IConfigWrapper;
 import elec332.core.api.config.IConfigurableElement;
-import elec332.core.config.AbstractConfigWrapper;
 import elec332.core.config.ConfigWrapper;
 import elec332.core.hud.AbstractHud;
 import elec332.huds.Huds;
@@ -25,7 +25,7 @@ public class ClientProxy extends CommonProxy {
         this.huds = Sets.newHashSet();
     }
 
-    public static AbstractConfigWrapper config;
+    public static IConfigWrapper config;
     private final Set<WrappedHud> huds;
 
     @Override
@@ -56,12 +56,12 @@ public class ClientProxy extends CommonProxy {
         private boolean registered = true;
 
         @Override
-        public void registerProperties(@Nonnull ForgeConfigSpec.Builder config) {
+        public void registerProperties(@Nonnull ForgeConfigSpec.Builder config, ModConfig.Type type) {
             config.push(category);
             enabled = config
                     .comment("Sets whether this HUD will be shown in-game.")
                     .define("enabled", true);
-            hud.registerProperties(config);
+            hud.registerProperties(config, type);
             config.pop();
         }
 

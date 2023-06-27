@@ -1,5 +1,6 @@
 package elec332.huds.client.hud.armor;
 
+import com.electronwill.nightconfig.core.EnumGetMethod;
 import elec332.core.hud.AbstractHud;
 import elec332.core.hud.drawing.ItemStackDrawer;
 import elec332.core.hud.position.Alignment;
@@ -13,6 +14,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.fml.config.ModConfig;
 
 import javax.annotation.Nonnull;
 
@@ -30,10 +32,10 @@ public class ArmorHud extends AbstractHud {
     private ForgeConfigSpec.BooleanValue showArmor, showTools;
 
     @Override
-    public void registerProperties(@Nonnull ForgeConfigSpec.Builder config) {
+    public void registerProperties(@Nonnull ForgeConfigSpec.Builder config, ModConfig.Type type) {
         displayType = config
                 .comment("This defines the way that the tool/armor damage will be displayed.")
-                .defineEnum("displayType", DamageDisplayType.USES_LEFT);
+                .defineEnum("displayType", DamageDisplayType.USES_LEFT, EnumGetMethod.NAME);
         showArmor = config
                 .comment("Whether to enable the armor part of the HUD")
                 .define("showArmor", true);

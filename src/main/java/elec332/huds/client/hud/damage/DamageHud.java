@@ -21,6 +21,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.config.ModConfig;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -46,7 +47,7 @@ public class DamageHud extends AbstractHud {
     }
 
     @Override
-    public void registerProperties(@Nonnull ForgeConfigSpec.Builder config) {
+    public void registerProperties(@Nonnull ForgeConfigSpec.Builder config, ModConfig.Type type) {
         this.noSelTimeConf = config
                 .comment("The time to show the mob-hud whilst not hovering over it anymore. (In ticks, 1/20th of a second)")
                 .defineInRange("noSelectTime", 200, 0, 1000);
@@ -117,7 +118,7 @@ public class DamageHud extends AbstractHud {
             //int k = i / 65536;
             //OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) j, (float) k);
             GlStateManager.color4f(1, 1, 1, 1);
-            float playerAngle = (float) Math.toDegrees(Math.atan2(player.posZ - entity.posZ, player.posX - entity.posX));
+            float playerAngle = (float) Math.toDegrees(Math.atan2(player.getPosZ() - entity.getPosZ(), player.getPosX() - entity.getPosX()));
             alignment.renderHudPart(hudEntityDrawer, entity, startX, startY, playerAngle - 90, entS);
         }
     }
